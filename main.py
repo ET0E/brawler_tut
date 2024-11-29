@@ -1,6 +1,13 @@
 import pygame
+import sys
 from pygame import mixer
 from fighter import Fighter
+from network import Network
+
+if len(sys.argv) > 1:
+  IS_HOST = sys.argv[1].lower() == "host"
+else:
+  IS_HOST = False
 
 mixer.init()
 pygame.init()
@@ -87,9 +94,14 @@ def draw_health_bar(health, x, y):
 fighter_1 = Fighter(1, 200, 310, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)
 fighter_2 = Fighter(2, 700, 310, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS, magic_fx)
 
+network = Network(host="localhost", is_host=IS_HOST)
+my_fighter = fighter_1 if IS_HOST else fighter_2
+opponent_fighter = fighter_2 if IS_HOST else fighter_1
+
 #game loop
 run = True
 while run:
+  
 
   clock.tick(FPS)
 
@@ -105,8 +117,58 @@ while run:
   #update countdown
   if intro_count <= 0:
     #move fighters
-    fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2, round_over)
-    fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1, round_over)
+    my_fighter.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, opponent_fighter, round_over)
+    
+    fighter_data = {
+        #position and size
+        'x': my_fighter.rect.x,
+        'y': my_fighter.rect.y,
+        'vel_y': my_fighter.vel_y,
+        
+        # Animation states
+        'action': my_fighter.action,
+        'frame_index': my_fighter.frame_index,
+        'update_time': my_fighter.update_time,
+        'flip': my_fighter.flip,
+        
+        # Movement states
+        'running': my_fighter.running,
+        'jump': my_fighter.jump,
+        
+        # Combat states
+        'attacking': my_fighter.attacking,
+        'attack_type': my_fighter.attack_type,
+        'attack_cooldown': my_fighter.attack_cooldown,
+        'hit': my_fighter.hit,
+        'health': my_fighter.health,
+        'alive': my_fighter.alive
+    }
+    network.send(fighter_data)
+    
+    opponent_data = network.receive()
+    if opponent_data:
+        # Position and size
+        opponent_fighter.rect.x = opponent_data['x']
+        opponent_fighter.rect.y = opponent_data['y']
+        opponent_fighter.vel_y = opponent_data['vel_y']
+        
+        # Animation states
+        opponent_fighter.action = opponent_data['action']
+        opponent_fighter.frame_index = opponent_data['frame_index']
+        opponent_fighter.update_time = opponent_data['update_time']
+        opponent_fighter.flip = opponent_data['flip']
+        
+        # Movement states
+        opponent_fighter.running = opponent_data['running']
+        opponent_fighter.jump = opponent_data['jump']
+        
+        # Combat states
+        opponent_fighter.attacking = opponent_data['attacking']
+        opponent_fighter.attack_type = opponent_data['attack_type']
+        opponent_fighter.attack_cooldown = opponent_data['attack_cooldown']
+        opponent_fighter.hit = opponent_data['hit']
+        opponent_fighter.health = opponent_data['health']
+        opponent_fighter.alive = opponent_data['alive']
   else:
     #display count timer
     draw_text(str(intro_count), count_font, RED, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
