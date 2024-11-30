@@ -17,7 +17,7 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Brawler")
+pygame.display.set_caption("Rock-em-Sock-em")
 
 #set framerate
 clock = pygame.time.Clock()
@@ -55,7 +55,7 @@ magic_fx = pygame.mixer.Sound("assets/audio/magic.wav")
 magic_fx.set_volume(0.75)
 
 #load background image
-bg_image = pygame.image.load("assets/images/background/background.jpg").convert_alpha()
+bg_image = pygame.image.load("assets/images/background/boxing-ring-background.jpg").convert_alpha()
 
 #load spritesheets
 warrior_sheet = pygame.image.load("assets/images/warrior/Sprites/warrior.png").convert_alpha()
