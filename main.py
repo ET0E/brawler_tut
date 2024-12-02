@@ -152,7 +152,7 @@ while run:
     }
     network.send(fighter_data)
     
-    opponent_data = network.get_latest_data()
+    opponent_data = network.receive()
     if opponent_data:
         # Position and size
         opponent_fighter.rect.x = opponent_data['x']

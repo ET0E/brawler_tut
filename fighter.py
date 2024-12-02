@@ -23,13 +23,6 @@ class Fighter():
     self.hit = False
     self.health = 100
     self.alive = True
-    
-    # Define attack data
-    self.attack_data = {
-        1: {"damage": 10, "range": 2, "height": 50},  # Light attack
-        2: {"damage": 15, "range": 2.2, "height": 40}  # Heavy attack
-    }
-
 
 
   def load_images(self, sprite_sheet, animation_steps):
@@ -180,38 +173,14 @@ class Fighter():
 
 
   def attack(self, target):
-    if self.attack_cooldown == 0 and self.attacking == False and self.alive:
-            self.attacking = True
-            self.attack_sound.play()
-            attacking_rect = self.get_attack_rect()
-            
-            if attacking_rect.colliderect(target.rect):
-                # Get current attack data
-                attack = self.attack_data[self.attack_type]
-                target.health -= attack["damage"]
-                target.hit = True
-                
-                # Check if target is killed
-                if target.health <= 0:
-                    target.health = 0
-                    target.alive = False
-                    target.update_action(6)  # Death animation
-                    
-  def get_attack_rect(self):
-        # Get attack data for current attack type
-        attack = self.attack_data[self.attack_type]
-        
-        # Calculate attack rectangle based on direction and attack type
-        if self.flip:
-            x = self.rect.centerx - (self.rect.width * attack["range"])
-        else:
-            x = self.rect.centerx
-            
-        y = self.rect.y + attack["height"]
-        width = self.rect.width * attack["range"]
-        height = self.rect.height - attack["height"]
-        
-        return pygame.Rect(x, y, width, height)
+    if self.attack_cooldown == 0:
+      #execute attack
+      self.attacking = True
+      self.attack_sound.play()
+      attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width, self.rect.height)
+      if attacking_rect.colliderect(target.rect):
+        target.health -= 10
+        target.hit = True
 
 
   def update_action(self, new_action):
@@ -223,10 +192,5 @@ class Fighter():
       self.update_time = pygame.time.get_ticks()
 
   def draw(self, surface):
-        img = pygame.transform.flip(self.image, self.flip, False)
-        surface.blit(img, (self.rect.x - (self.offset[0] * self.image_scale), self.rect.y - (self.offset[1] * self.image_scale)))
-        
-        # Debug: draw attack rectangle
-        if self.attacking:
-            attack_rect = self.get_attack_rect()
-            pygame.draw.rect(surface, (255, 0, 0), attack_rect, 2)  # Red rectangle for attack area
+    img = pygame.transform.flip(self.image, self.flip, False)
+    surface.blit(img, (self.rect.x - (self.offset[0] * self.image_scale), self.rect.y - (self.offset[1] * self.image_scale)))
