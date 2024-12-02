@@ -4,10 +4,18 @@ from pygame import mixer
 from fighter import Fighter
 from network import Network
 
-if len(sys.argv) > 1:
-  IS_HOST = sys.argv[1].lower() == "host"
+# Replace these near the top of the file
+if len(sys.argv) > 2:  # Now checking for 2 arguments
+    IS_HOST = sys.argv[1].lower() == "host"
+    IP_ADDRESS = sys.argv[2]  # Second argument is IP address
 else:
-  IS_HOST = False
+    print("Usage: python main.py [host/client] [ip_address]")
+    print("Example host: python main.py host 192.168.1.5")
+    print("Example client: python main.py client 192.168.1.5")
+    sys.exit(1)
+
+# Update the network initialization
+network = Network(host=IP_ADDRESS, is_host=IS_HOST)
 
 mixer.init()
 pygame.init()
