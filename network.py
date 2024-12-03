@@ -141,6 +141,9 @@ class Network:
         return self.last_received_data
         
     def close(self):
+        self.connected = False
+        if hasattr(self, 'receive_thread') and self.receive_thread.is_alive():
+            self.receive_thread.join(timeout=1.0)
         try:
             if self.is_host:
                 self.conn.close()
