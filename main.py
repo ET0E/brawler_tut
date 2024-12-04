@@ -108,7 +108,7 @@ opponent_fighter = fighter_2 if IS_HOST else fighter_1
 #game loop
 run = True
 while run:
-  
+
 
   clock.tick(FPS)
 
@@ -150,9 +150,11 @@ while run:
         'health': my_fighter.health,
         'alive': my_fighter.alive
     }
+
     network.send(fighter_data)
-    
+
     opponent_data = network.get_latest_data()
+
     if opponent_data:
         # Position and size
         opponent_fighter.rect.x = opponent_data['x']
@@ -176,6 +178,7 @@ while run:
         opponent_fighter.hit = opponent_data['hit']
         opponent_fighter.health = opponent_data['health']
         opponent_fighter.alive = opponent_data['alive']
+
   else:
     #display count timer
     draw_text(str(intro_count), count_font, RED, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
@@ -216,7 +219,6 @@ while run:
     if event.type == pygame.QUIT:
       run = False
       network.close()
-
 
   #update display
   pygame.display.update()

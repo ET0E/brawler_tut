@@ -179,8 +179,11 @@ class Fighter():
       self.attack_sound.play()
       attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width, self.rect.height)
       if attacking_rect.colliderect(target.rect):
+        print(f"Target's health before hit: {target.health}")  # Debug log
         target.health -= 10
+        print(f"Target's health after hit: {target.health}")   # Debug log
         target.hit = True
+        print(f"Hit registered on {target.player}")  # Debug message
 
 
   def update_action(self, new_action):
