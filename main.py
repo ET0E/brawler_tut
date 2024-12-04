@@ -151,6 +151,12 @@ while run:
         'alive': my_fighter.alive
     }
 
+    if my_fighter.attacking and opponent_fighter.hit:
+        fighter_data.update({
+            'target_health': opponent_fighter.health,
+            'hit_confirmed': True
+        })
+
     network.send(fighter_data)
 
     opponent_data = network.get_latest_data()
@@ -171,13 +177,23 @@ while run:
         opponent_fighter.running = opponent_data['running']
         opponent_fighter.jump = opponent_data['jump']
         
+        opponent_fighter.attacking = opponent_data['attacking']
+        if opponent_data['attacking']:
+            opponent_fighter.attack_type = opponent_data['attack_type']
+        if opponent_data.get('hit_confirmed'):
+          my_fighter.health = opponent_data['target_health']
+          my_fighter.hit = True
+        if opponent_fighter.attacking:
+          opponent_fighter.update_action(3 if opponent_data['attack_type'] == 1 else 4)
         # Combat states
+        """
         opponent_fighter.attacking = opponent_data['attacking']
         opponent_fighter.attack_type = opponent_data['attack_type']
         opponent_fighter.attack_cooldown = opponent_data['attack_cooldown']
         opponent_fighter.hit = opponent_data['hit']
         opponent_fighter.health = opponent_data['health']
         opponent_fighter.alive = opponent_data['alive']
+        """
 
   else:
     #display count timer
