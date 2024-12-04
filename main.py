@@ -175,13 +175,16 @@ while run:
         opponent_fighter.running = opponent_data['running']
         opponent_fighter.jump = opponent_data['jump']
         
-        if opponent_data['attacking']:
-            opponent_fighter.attack_type = opponent_data['attack_type']
+        opponent_fighter.attacking = opponent_data['attacking']
+        opponent_fighter.attack_type = opponent_data['attack_type']
+        if opponent_fighter.attacking:
+            if opponent_fighter.attack_type == 1:
+               opponent_fighter.update_action(3)
+            elif opponent_fighter.attack_type == 2:
+               opponent_fighter.update_action(4)
         if opponent_data.get('hit_confirmed'):
           my_fighter.health = opponent_data['target_health']
           my_fighter.hit = True
-        if opponent_fighter.attacking:
-          opponent_fighter.update_action(3 if opponent_data['attack_type'] == 1 else 4)
         # Combat states
         """
         opponent_fighter.attacking = opponent_data['attacking']
