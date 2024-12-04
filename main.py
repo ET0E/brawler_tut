@@ -25,7 +25,7 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Rock-em-Sock-em")
+pygame.display.set_caption("Fighting Game")
 
 #set framerate
 clock = pygame.time.Clock()
@@ -63,7 +63,7 @@ magic_fx = pygame.mixer.Sound("assets/audio/magic.wav")
 magic_fx.set_volume(0.75)
 
 #load background image
-bg_image = pygame.image.load("assets/images/background/boxing-ring-background.jpg").convert_alpha()
+bg_image = pygame.image.load("assets/images/background/background.jpg").convert_alpha()
 
 #load spritesheets
 warrior_sheet = pygame.image.load("assets/images/warrior/Sprites/warrior.png").convert_alpha()
@@ -102,13 +102,11 @@ def draw_health_bar(health, x, y):
 fighter_1 = Fighter(1, 200, 310, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)
 fighter_2 = Fighter(2, 700, 310, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS, magic_fx)
 
-my_fighter = fighter_1 if IS_HOST else fighter_2
-opponent_fighter = fighter_2 if IS_HOST else fighter_1
-
 #game loop
 run = True
 while run:
-
+  my_fighter = fighter_1 if IS_HOST else fighter_2
+  opponent_fighter = fighter_2 if IS_HOST else fighter_1
 
   clock.tick(FPS)
 
@@ -177,7 +175,6 @@ while run:
         opponent_fighter.running = opponent_data['running']
         opponent_fighter.jump = opponent_data['jump']
         
-        opponent_fighter.attacking = opponent_data['attacking']
         if opponent_data['attacking']:
             opponent_fighter.attack_type = opponent_data['attack_type']
         if opponent_data.get('hit_confirmed'):
